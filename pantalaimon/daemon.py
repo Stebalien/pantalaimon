@@ -74,13 +74,7 @@ from pantalaimon.thread_messages import (
     CancelKeyShare,
 )
 
-CORS_HEADERS = {
-    "Access-Control-Allow-Headers": (
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    ),
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Origin": "*",
-}
+CORS_HEADERS = {}
 
 
 class NotDecryptedAvailableError(Exception):
