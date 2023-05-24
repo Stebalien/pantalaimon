@@ -565,9 +565,7 @@ class ProxyDaemon:
 
         return user
 
-    async def start_pan_client(
-        self, access_token, user, user_id, password, device_id=None
-    ):
+    async def start_pan_client(self, access_token, user_id, device_id):
         client = ClientInfo(user_id, access_token)
         self.client_info[access_token] = client
         self.store.save_server_user(self.name, user_id)
@@ -593,22 +591,7 @@ class ProxyDaemon:
             media_info=self.media_info,
         )
 
-        if password == "":
-            if device_id is None:
-                logger.warn(
-                    "Empty password provided and device_id was also None, not "
-                    "starting background sync client "
-                )
-                return
-            # If password is blank, we cannot login normally and must
-            # fall back to using the provided device_id.
-            pan_client.restore_login(user_id, device_id, access_token)
-        else:
-            response = await pan_client.login(password, "pantalaimon")
-
-            if not isinstance(response, LoginResponse):
-                await pan_client.close()
-                return
+        pan_client.restore_login(user_id, device_id, access_token)
 
         logger.info(f"Successfully started new background sync client for " f"{user_id}")
 
@@ -680,7 +663,7 @@ class ProxyDaemon:
                     f"a background sync client."
                 )
                 await self.start_pan_client(
-                    access_token, user, user_id, password, device_id
+                    access_token, user_id, device_id
                 )
 
         return web.Response(
